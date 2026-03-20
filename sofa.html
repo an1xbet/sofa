@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOFA Score — Калькулятор</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --border2: #2a3f5f;
+    --accent: #00c2ff;
+    --green: #00e676;
+    --green-dim: rgba(0,230,118,0.10);
+    --yellow: #ffb300;
+    --yellow-dim: rgba(255,179,0,0.10);
+    --red: #ff4757;
+    --red-dim: rgba(255,71,87,0.10);
+    --text: #e2eaf7;
+    --text2: #7a90b0;
+    --text3: #4a5f7a;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --radius: 10px;
+    --tr: 0.15s ease;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; line-height: 1.5; }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    width: 36px; height: 36px; background: #00e676; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-weight: 700; font-size: 13px; color: #000;
+  }
+  .header-title { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+  .header-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .live-score-wrap { text-align: right; }
+  .live-score-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .live-score-val {
+    font-family: var(--mono); font-size: 30px; font-weight: 700; color: var(--green); line-height: 1;
+    transition: color 0.3s;
+  }
+  .live-score-val.med { color: var(--yellow); }
+  .live-score-val.high { color: var(--red); }
+
+  /* MAIN */
+  .main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* PATIENT INFO */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .info-field label { display: block; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .info-field input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 8px; color: var(--text); padding: 9px 13px; font-size: 13px; font-family: var(--sans);
+    outline: none; transition: border-color var(--tr);
+  }
+  .info-field input:focus { border-color: var(--accent); }
+  .info-field input::placeholder { color: var(--text3); }
+
+  /* SECTION */
+  .section {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 12px; overflow: hidden;
+  }
+  .section-header {
+    padding: 11px 18px; background: var(--surface2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-icon { font-size: 15px; }
+  .section-title { font-weight: 600; font-size: 13px; }
+  .section-subscore {
+    margin-left: auto; font-family: var(--mono); font-size: 12px;
+    color: var(--accent); background: rgba(0,194,255,0.10);
+    padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(0,194,255,0.25);
+    min-width: 72px; text-align: center;
+  }
+  .section-body { padding: 14px 18px; }
+
+  /* BUTTONS */
+  .btn-group { display: flex; flex-wrap: wrap; gap: 7px; }
+  .btn-opt {
+    font-family: var(--mono); font-size: 12px; padding: 8px 13px;
+    border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2);
+    color: var(--text2); cursor: pointer; transition: all var(--tr); white-space: nowrap;
+  }
+  .btn-opt:hover { border-color: var(--accent); color: var(--text); }
+  .btn-opt .pts { font-size: 10px; background: rgba(255,255,255,0.07); padding: 1px 4px; border-radius: 3px; margin-left: 5px; }
+  .btn-opt.sel-0 { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .btn-opt.sel-1 { background: rgba(255,235,59,0.10); border-color: #ffeb3b; color: #ffeb3b; }
+  .btn-opt.sel-2 { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+  .btn-opt.sel-3 { background: rgba(255,120,0,0.12); border-color: #ff7800; color: #ff7800; }
+  .btn-opt.sel-4 { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .btn-opt.missing { border-color: var(--red) !important; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ACTIONS */
+  .actions { display: flex; gap: 12px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+  .btn-calc {
+    background: var(--green); color: #000; border: none; padding: 13px 36px;
+    border-radius: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-calc:hover { background: #33ff99; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--text2); border: 1px solid var(--border2);
+    padding: 13px 24px; border-radius: 10px; font-family: var(--mono); font-size: 13px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger:hover { border-color: var(--red) !important; color: var(--red) !important; }
+
+  /* RESULT */
+  .result-panel {
+    display: none; margin-top: 16px;
+    background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius);
+    padding: 22px 26px;
+  }
+  .result-panel.visible { display: block; }
+  .result-top { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .result-num { font-family: var(--mono); font-size: 64px; font-weight: 700; line-height: 1; }
+  .result-right { flex: 1; }
+  .result-subtitle { font-size: 12px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.7px; }
+  .result-risk {
+    display: inline-block; padding: 5px 16px; border-radius: 20px;
+    font-weight: 600; font-size: 14px; margin-bottom: 8px;
+  }
+  .rg { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,230,118,.3); }
+  .ry { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,179,0,.3); }
+  .rr { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,71,87,.3); }
+  .result-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .result-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 14px; overflow: hidden; }
+  .result-bar-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
+  .breakdown { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; margin-top: 14px; }
+  .bd-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; }
+  .bd-item .bv { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--accent); }
+  .bd-item .bl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+  /* MISSING */
+  .missing-warning { display: none; background: var(--red-dim); border: 1px solid rgba(255,71,87,.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--red); margin-top: 12px; }
+  .missing-warning.visible { display: block; }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .breakdown { grid-template-columns: repeat(3,1fr); }
+    .result-num { font-size: 44px; }
+    .live-score-val { font-size: 22px; }
+  }
+
+  /* ===== PRINT ===== */
+  #printable { display: none; }
+
+  @media print {
+    body { background: #fff; color: #000; font-family: Arial, sans-serif; font-size: 12px; }
+    .header, .main > *:not(#printable) { display: none !important; }
+    #printable { display: block !important; }
+
+    .p-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+    .p-hospital { font-size: 15px; font-weight: 700; }
+    .p-sub { font-size: 11px; color: #444; }
+    .p-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; font-size: 12px; margin: 8px 0 12px; }
+    .p-meta-item { display: flex; gap: 6px; }
+    .p-meta-item b { min-width: 120px; }
+    .p-title { font-size: 16px; font-weight: 700; text-align: center; margin: 8px 0; border: 2px solid #000; padding: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+    th { background: #222; color: #fff; padding: 6px 8px; font-size: 12px; text-align: left; }
+    td { padding: 5px 8px; border-bottom: 1px solid #ccc; font-size: 12px; }
+    tr:nth-child(even) td { background: #f5f5f5; }
+    .p-total { font-size: 16px; font-weight: 700; margin: 10px 0 4px; }
+    .p-interp { font-size: 13px; margin-bottom: 8px; }
+    .p-comment { border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-size: 12px; color: #333; margin-bottom: 12px; }
+    .p-sign { margin-top: 16px; font-size: 12px; border-top: 1px solid #ccc; padding-top: 8px; display: flex; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">SF</div>
+    <div>
+      <div class="header-title">SOFA Score</div>
+      <div class="header-sub">Sequential Organ Failure Assessment · Vincent, 1996</div>
+    </div>
+  </div>
+  <div class="live-score-wrap">
+    <div class="live-score-label">Баллы</div>
+    <div class="live-score-val" id="liveScore">0</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- PATIENT INFO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📋</span>
+      <span class="section-title">Данные пациента и врача</span>
+    </div>
+    <div class="section-body">
+      <div class="info-grid">
+        <div class="info-field">
+          <label>ФИО пациента</label>
+          <input id="patFio" type="text" placeholder="Иванов Иван Иванович" />
+        </div>
+        <div class="info-field">
+          <label>№ истории болезни</label>
+          <input id="patNum" type="text" placeholder="123456" />
+        </div>
+        <div class="info-field">
+          <label>Дата</label>
+          <input id="patDate" type="date" />
+        </div>
+        <div class="info-field">
+          <label>Название больницы</label>
+          <input id="hospital" type="text" placeholder="ГБУЗ ГКБ №1" />
+        </div>
+        <div class="info-field">
+          <label>ФИО врача</label>
+          <input id="doctorFio" type="text" placeholder="Петрова А.В." />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. RESPIRATION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🫁</span>
+      <span class="section-title">1 · Дыхательная система — PaO₂ / FiO₂</span>
+      <span class="section-subscore" id="sc-resp">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="resp">
+        <button class="btn-opt" data-p="resp" data-s="0" onclick="pick(this)">≥ 400 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="resp" data-s="1" onclick="pick(this)">300–399 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="resp" data-s="2" onclick="pick(this)">200–299 <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="resp" data-s="3" onclick="pick(this)">100–199 <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="resp" data-s="4" onclick="pick(this)">&lt; 100 <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PLATELETS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🩸</span>
+      <span class="section-title">2 · Гемостаз — Тромбоциты (×10⁹/л)</span>
+      <span class="section-subscore" id="sc-plt">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="plt">
+        <button class="btn-opt" data-p="plt" data-s="0" onclick="pick(this)">≥ 150 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="plt" data-s="1" onclick="pick(this)">100–149 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="plt" data-s="2" onclick="pick(this)">50–99 <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="plt" data-s="3" onclick="pick(this)">20–49 <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="plt" data-s="4" onclick="pick(this)">&lt; 20 <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. BILIRUBIN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🟡</span>
+      <span class="section-title">3 · Печень — Билирубин (мкмоль/л)</span>
+      <span class="section-subscore" id="sc-bili">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="bili">
+        <button class="btn-opt" data-p="bili" data-s="0" onclick="pick(this)">&lt; 20 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="bili" data-s="1" onclick="pick(this)">20–32 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="bili" data-s="2" onclick="pick(this)">33–101 <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="bili" data-s="3" onclick="pick(this)">102–204 <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="bili" data-s="4" onclick="pick(this)">&gt; 204 <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CARDIOVASCULAR -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🫀</span>
+      <span class="section-title">4 · Сердечно-сосудистая система</span>
+      <span class="section-subscore" id="sc-cvs">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="cvs">
+        <button class="btn-opt" data-p="cvs" data-s="0" onclick="pick(this)">MAP ≥ 70 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="cvs" data-s="1" onclick="pick(this)">MAP &lt; 70 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="cvs" data-s="2" onclick="pick(this)">Допамин ≤5 мкг/кг/мин <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="cvs" data-s="3" onclick="pick(this)">Допамин 5–15 мкг/кг/мин <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="cvs" data-s="4" onclick="pick(this)">Допамин &gt;15 / Адр / НА <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. GCS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <span class="section-title">5 · Сознание — GCS</span>
+      <span class="section-subscore" id="sc-gcs">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="gcs">
+        <button class="btn-opt" data-p="gcs" data-s="0" onclick="pick(this)">15 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="gcs" data-s="1" onclick="pick(this)">13–14 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="gcs" data-s="2" onclick="pick(this)">10–12 <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="gcs" data-s="3" onclick="pick(this)">6–9 <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="gcs" data-s="4" onclick="pick(this)">3–5 <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. RENAL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🫘</span>
+      <span class="section-title">6 · Почки — Креатинин (мкмоль/л) или диурез</span>
+      <span class="section-subscore" id="sc-renal">—</span>
+    </div>
+    <div class="section-body">
+      <div class="btn-group" id="renal">
+        <button class="btn-opt" data-p="renal" data-s="0" onclick="pick(this)">Кр &lt; 100 <span class="pts">0</span></button>
+        <button class="btn-opt" data-p="renal" data-s="1" onclick="pick(this)">Кр 100–170 <span class="pts">+1</span></button>
+        <button class="btn-opt" data-p="renal" data-s="2" onclick="pick(this)">Кр 171–299 <span class="pts">+2</span></button>
+        <button class="btn-opt" data-p="renal" data-s="3" onclick="pick(this)">Кр ≥ 300 <span class="pts">+3</span></button>
+        <button class="btn-opt" data-p="renal" data-s="4" onclick="pick(this)">Диурез &lt; 200 мл/сут <span class="pts">+4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSING -->
+  <div class="missing-warning" id="missingWarn">⚠️ Не выбраны: <span id="missingList"></span></div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn-calc" onclick="calculate()">▶ Рассчитать SOFA</button>
+    <button class="btn-secondary" onclick="printReport()">⎙ Печать</button>
+    <button class="btn-secondary btn-danger" onclick="resetAll()">✕ Сбросить</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-panel" id="resultPanel">
+    <div class="result-top">
+      <div class="result-num" id="rNum" style="color:var(--green)">0</div>
+      <div class="result-right">
+        <div class="result-subtitle">SOFA Score / 24</div>
+        <div class="result-risk" id="rRisk">—</div>
+        <div class="result-desc" id="rDesc"></div>
+      </div>
+    </div>
+    <div class="result-bar-wrap"><div class="result-bar-fill" id="rBar" style="width:0%;background:var(--green)"></div></div>
+    <div class="breakdown">
+      <div class="bd-item"><div class="bv" id="bd0">—</div><div class="bl">Дыхание</div></div>
+      <div class="bd-item"><div class="bv" id="bd1">—</div><div class="bl">Тромбоциты</div></div>
+      <div class="bd-item"><div class="bv" id="bd2">—</div><div class="bl">Билирубин</div></div>
+      <div class="bd-item"><div class="bv" id="bd3">—</div><div class="bl">ССС</div></div>
+      <div class="bd-item"><div class="bv" id="bd4">—</div><div class="bl">GCS</div></div>
+      <div class="bd-item"><div class="bv" id="bd5">—</div><div class="bl">Почки</div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ===== PRINTABLE ===== -->
+<div id="printable">
+  <div class="p-header">
+    <div>
+      <div class="p-hospital" id="pHospital">Лечебное учреждение</div>
+      <div class="p-sub">Отделение анестезиологии и реанимации</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:13px;font-weight:700;">SOFA Score</div>
+      <div style="font-size:11px;color:#555;">Sequential Organ Failure Assessment</div>
+    </div>
+  </div>
+
+  <div class="p-meta">
+    <div class="p-meta-item"><b>Пациент:</b> <span id="pPatFio">—</span></div>
+    <div class="p-meta-item"><b>№ истории болезни:</b> <span id="pPatNum">—</span></div>
+    <div class="p-meta-item"><b>Врач:</b> <span id="pDoctor">—</span></div>
+    <div class="p-meta-item"><b>Дата:</b> <span id="pDate">—</span></div>
+  </div>
+
+  <div class="p-title">РАСЧЁТ ШКАЛЫ SOFA</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Параметр</th>
+        <th>Орган / Система</th>
+        <th>Выбранное значение</th>
+        <th style="text-align:center;">Баллы</th>
+      </tr>
+    </thead>
+    <tbody id="pTableBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" style="font-weight:700;text-align:right;">ИТОГО:</td>
+        <td style="font-weight:700;text-align:center;font-size:15px;" id="pTotal">—</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="p-total">Результат: <span id="pScore">—</span> баллов</div>
+  <div class="p-interp" id="pInterp"></div>
+  <div class="p-comment" id="pComment"></div>
+
+  <div class="p-sign">
+    <span>Подпись врача: ____________________________</span>
+    <span>Дата: _______________</span>
+  </div>
+</div>
+
+<script>
+  const PARAMS = ['resp','plt','bili','cvs','gcs','renal'];
+  const PARAM_NAMES = {
+    resp: 'PaO₂/FiO₂', plt: 'Тромбоциты', bili: 'Билирубин',
+    cvs: 'ССС / MAP / Вазопрессоры', gcs: 'GCS (сознание)', renal: 'Креатинин / Диурез'
+  };
+  const ORGANS = {
+    resp: 'Дыхательная', plt: 'Гемостаз', bili: 'Печень',
+    cvs: 'Сердечно-сосудистая', gcs: 'ЦНС', renal: 'Почки'
+  };
+  const SC_IDS = ['sc-resp','sc-plt','sc-bili','sc-cvs','sc-gcs','sc-renal'];
+  const BD_IDS = ['bd0','bd1','bd2','bd3','bd4','bd5'];
+
+  const state = {};
+
+  // Set today's date by default
+  document.getElementById('patDate').valueAsDate = new Date();
+
+  function pick(btn) {
+    const p = btn.dataset.p;
+    const s = parseInt(btn.dataset.s);
+    document.querySelectorAll(`[data-p="${p}"]`).forEach(b => {
+      b.className = 'btn-opt';
+      b.classList.remove('missing');
+    });
+    btn.classList.add(`sel-${s}`);
+    state[p] = { score: s, label: btn.textContent.replace(/\+?\d+$/, '').trim() };
+    // update sub-score badge
+    const idx = PARAMS.indexOf(p);
+    document.getElementById(SC_IDS[idx]).textContent = s + ' / 4';
+    updateLive();
+  }
+
+  function updateLive() {
+    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
+    const el = document.getElementById('liveScore');
+    el.textContent = total;
+    el.className = 'live-score-val';
+    if (total >= 13) el.classList.add('high');
+    else if (total >= 7) el.classList.add('med');
+  }
+
+  function calculate() {
+    const missing = PARAMS.filter(p => state[p] === undefined);
+    // Highlight missing
+    PARAMS.forEach(p => {
+      document.querySelectorAll(`[data-p="${p}"]`).forEach(b => b.classList.remove('missing'));
+    });
+    if (missing.length > 0) {
+      missing.forEach(p => {
+        document.querySelectorAll(`[data-p="${p}"]`).forEach(b => b.classList.add('missing'));
+      });
+      document.getElementById('missingList').textContent = missing.map(p => PARAM_NAMES[p]).join(', ');
+      document.getElementById('missingWarn').classList.add('visible');
+      document.getElementById('missingWarn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      document.getElementById('missingWarn').classList.remove('visible');
+    }
+
+    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
+    const panel = document.getElementById('resultPanel');
+    panel.classList.add('visible');
+
+    document.getElementById('rNum').textContent = total;
+    PARAMS.forEach((p, i) => {
+      document.getElementById(BD_IDS[i]).textContent = state[p] !== undefined ? state[p].score : '—';
+    });
+
+    let riskClass, riskText, desc, barColor;
+    if (total <= 6) {
+      riskClass = 'rg'; riskText = '🟢 Низкий риск'; barColor = 'var(--green)';
+      desc = `SOFA ${total}: стабильное состояние. Органная дисфункция минимальна. Продолжить стандартный мониторинг и терапию. Повторная оценка через 24–48 ч.`;
+    } else if (total <= 12) {
+      riskClass = 'ry'; riskText = '🟡 Средний риск'; barColor = 'var(--yellow)';
+      desc = `SOFA ${total}: умеренная органная дисфункция. Требуется усиленный мониторинг, оценка функции органов, возможна коррекция инфузионной терапии и вазоактивных препаратов.`;
+    } else {
+      riskClass = 'rr'; riskText = '🔴 Высокий риск ПОЛИОРГАННОЙ НЕДОСТАТОЧНОСТИ'; barColor = 'var(--red)';
+      desc = `SOFA ${total}: тяжёлая полиорганная дисфункция/недостаточность. Показаны максимальная интенсивная терапия, вазопрессоры, возможно — ИВЛ, ЗПТ. Консилиум. Летальность > 40–50%.`;
+    }
+
+    const rEl = document.getElementById('rRisk');
+    rEl.className = 'result-risk ' + riskClass;
+    rEl.textContent = riskText;
+    document.getElementById('rDesc').textContent = desc;
+    document.getElementById('rNum').style.color = barColor;
+    document.getElementById('rBar').style.cssText = `width:${(total/24)*100}%;background:${barColor}`;
+
+    // Prepare print
+    populatePrint(total, riskText, desc);
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function populatePrint(total, riskText, desc) {
+    document.getElementById('pHospital').textContent = document.getElementById('hospital').value || 'Лечебное учреждение';
+    document.getElementById('pPatFio').textContent = document.getElementById('patFio').value || '—';
+    document.getElementById('pPatNum').textContent = document.getElementById('patNum').value || '—';
+    document.getElementById('pDoctor').textContent = document.getElementById('doctorFio').value || '—';
+    const d = document.getElementById('patDate').value;
+    document.getElementById('pDate').textContent = d ? new Date(d).toLocaleDateString('ru-RU') : '—';
+    document.getElementById('pScore').textContent = total;
+    document.getElementById('pTotal').textContent = total;
+    document.getElementById('pInterp').textContent = riskText;
+    document.getElementById('pComment').textContent = desc;
+
+    const tbody = document.getElementById('pTableBody');
+    tbody.innerHTML = '';
+    PARAMS.forEach(p => {
+      const v = state[p];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${PARAM_NAMES[p]}</td><td>${ORGANS[p]}</td><td>${v ? v.label : '—'}</td><td style="text-align:center;font-weight:700;">${v ? v.score : '—'}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function printReport() {
+    // Ensure print data is ready
+    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
+    const riskText = total <= 6 ? 'Низкий риск' : total <= 12 ? 'Средний риск' : 'Высокий риск ПОЛИОРГАННОЙ НЕДОСТАТОЧНОСТИ';
+    const desc = total <= 6 ? 'Стабильное состояние. Продолжить мониторинг.' : total <= 12 ? 'Умеренная органная дисфункция. Усиленный мониторинг.' : 'Тяжёлая полиорганная недостаточность. Максимальная ИТ.';
+    populatePrint(total, riskText, desc);
+    window.print();
+  }
+
+  function resetAll() {
+    PARAMS.forEach(p => { delete state[p]; });
+    document.querySelectorAll('.btn-opt').forEach(b => { b.className = 'btn-opt'; });
+    SC_IDS.forEach(id => { document.getElementById(id).textContent = '—'; });
+    document.getElementById('resultPanel').classList.remove('visible');
+    document.getElementById('missingWarn').classList.remove('visible');
+    document.getElementById('liveScore').textContent = '0';
+    document.getElementById('liveScore').className = 'live-score-val';
+  }
+</script>
+</body>
+</html>
