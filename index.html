@@ -3,740 +3,724 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOFA Score — Калькулятор</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<title>SOFA Score — Калькулятор органной дисфункции</title>
 <style>
-  xt); font-family: var(--sans); font-size: 14px; min-height: 100vh; line-height: 1.5; }
-
-  /* ===== TOP BANNER ===== */
-  .top-banner {
-    background: linear-gradient(135deg, #1a3f6b 0%, #1a5fb4 60%, #2572cc 100%);
-    color: #fff;
-    padding: 18px 32px 16px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .top-banner::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px,
-      transparent 1px, transparent 16px
-    );
-    pointer-events: none;
-  }
-  .banner-score-name {
-    font-family: var(--display);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    margin-bottom: 3px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  }
-  .banner-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.75);
-    margin-bottom: 10px;
-    font-weight: 300;
-    letter-spacing: 0.3px;
-  }
-  .banner-authors {
-    display: flex; align-items: center; justify-content: center;
-    gap: 6px; flex-wrap: wrap;
-    font-size: 12px; color: rgba(255,255,255,0.70);
-    border-top: 1px solid rgba(255,255,255,0.18);
-    padding-top: 10px;
-    margin-top: 2px;
-  }:root {
-    --bg: #f4f6f9;
-    --bg2: #eef1f6;
-    --surface: #ffffff;
-    --surface2: #f8fafc;
-    --border: #dde3ed;
-    --border2: #c8d2e2;
-    --accent: #1a5fb4;
-    --accent-light: rgba(26,95,180,0.08);
-    --green: #1e7d4a;
-    --green-bg: #e8f7ef;
-    --green-border: rgba(30,125,74,0.35);
-    --yellow: #9a6200;
-    --yellow-bg: #fef9e7;
-    --yellow-border: rgba(154,98,0,0.35);
-    --red: #c0392b;
-    --red-bg: #fdf0ee;
-    --red-border: rgba(192,57,43,0.35);
-    --orange: #b84f00;
-    --orange-bg: rgba(184,79,0,0.09);
-    --text: #1c2b3a;
-    --text2: #4a637d;
-    --text3: #8a9db5;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Source Sans 3', sans-serif;
-    --display: 'Playfair Display', serif;
-    --radius: 10px;
-    --shadow: 0 2px 8px rgba(28,43,58,0.08);
-    --shadow-md: 0 4px 16px rgba(28,43,58,0.12);
-    --tr: 0.15s ease;
+  :root {
+    --bg-primary: #f0f4f8;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --border-color: #d0dce8;
+    --border-active: #2563eb;
+    --text-primary: #1a2540;
+    --text-secondary: #4a6080;
+    --text-muted: #8aa0b8;
+    --accent-blue: #2563eb;
+    --accent-green: #16a34a;
+    --accent-yellow: #ca8a04;
+    --accent-orange: #ea580c;
+    --accent-red: #dc2626;
+    --score-font: 'Courier New', Courier, monospace;
+    --btn-green-bg: #f0fdf4; --btn-green-border: #16a34a; --btn-green-text: #15803d;
+    --btn-yellow-bg: #fefce8; --btn-yellow-border: #ca8a04; --btn-yellow-text: #a16207;
+    --btn-orange-bg: #fff7ed; --btn-orange-border: #ea580c; --btn-orange-text: #c2410c;
+    --btn-red-bg: #fef2f2; --btn-red-border: #dc2626; --btn-red-text: #b91c1c;
+    --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
+    --radius: 14px;
+    --radius-btn: 8px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--te
-  .banner-authors .sep { color: rgba(255,255,255,0.35); }
-  .banner-authors b { color: rgba(255,255,255,0.92); font-weight: 600; }
-
-  /* ===== HEADER ===== */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 11px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 6px rgba(28,43,58,0.07);
+  body { background: var(--bg-primary); color: var(--text-primary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; font-size: 15px; line-height: 1.5; }
+ 
+  /* AUTHORS BANNER */
+  .authors-banner {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    color: #fff; text-align: center; padding: 14px 20px 12px; border-bottom: 3px solid #1d4ed8;
   }
-  .header-left { display: flex; align-items: center; gap: 11px; }
-  .header-logo {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, #1a5fb4, #2572cc);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-weight: 700; font-size: 13px; color: #fff;
-    box-shadow: 0 2px 6px rgba(26,95,180,0.35);
-  }
-  .header-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text); }
-  .header-sub { font-size: 11px; color: var(--text3); margin-top: 0px; }
-  .live-score-wrap { text-align: right; }
-  .live-score-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-  .live-score-val {
-    font-family: var(--mono); font-size: 30px; font-weight: 700;
-    color: var(--green); line-height: 1;
-    transition: color 0.3s;
-  }
-  .live-score-val.med { color: var(--yellow); }
-  .live-score-val.high { color: var(--red); }
-
+  .authors-banner .scale-name { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .authors-banner .scale-sub { font-size: 13px; opacity: 0.85; margin-bottom: 10px; }
+  .authors-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; font-size: 13px; opacity: 0.95; }
+  .authors-list .author-item { display: flex; align-items: center; gap: 5px; }
+  .authors-list .author-item .role { opacity: 0.75; font-size: 11px; }
+  .authors-list .divider { color: rgba(255,255,255,0.4); font-size: 18px; line-height: 1; }
+ 
+  /* APP HEADER */
+  .app-header { background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 14px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .header-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .header-title { display: flex; align-items: center; gap: 12px; }
+  .header-icon { width: 42px; height: 42px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border: 1.5px solid #93c5fd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .header-text h1 { font-size: 19px; font-weight: 700; color: var(--accent-blue); letter-spacing: 0.3px; }
+  .header-text p { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .live-score-badge { display: flex; align-items: center; gap: 8px; background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 8px 14px; transition: all 0.3s; }
+  .live-score-badge .score-val { font-family: var(--score-font); font-size: 26px; font-weight: 700; color: var(--accent-blue); min-width: 40px; text-align: center; transition: color 0.3s; }
+  .live-score-badge .score-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; line-height: 1.3; }
+  .pulse-dot { width: 8px; height: 8px; background: #16a34a; border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 6px #16a34a; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+ 
   /* MAIN */
-  .main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
-
-  /* PATIENT INFO */
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 0; }
-  .info-field label { display: block; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; font-weight: 600; }
-  .info-field input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 8px; color: var(--text); padding: 9px 13px; font-size: 13px; font-family: var(--sans);
-    outline: none; transition: border-color var(--tr), box-shadow var(--tr);
-  }
-  .info-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,95,180,0.12); }
-  .info-field input::placeholder { color: var(--text3); }
-
-  /* SECTION */
-  .section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 10px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-  }
-  .section-header {
-    padding: 11px 18px; background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-icon { font-size: 15px; }
-  .section-title { font-weight: 600; font-size: 13px; color: var(--text); }
-  .section-subscore {
-    margin-left: auto; font-family: var(--mono); font-size: 12px;
-    color: var(--accent); background: var(--accent-light);
-    padding: 2px 8px; border-radius: 20px;
-    border: 1px solid rgba(26,95,180,0.2);
-    min-width: 72px; text-align: center;
-  }
-  .section-body { padding: 14px 18px; }
-
-  /* BUTTONS */
-  .btn-group { display: flex; flex-wrap: wrap; gap: 7px; }
-  .btn-opt {
-    font-family: var(--mono); font-size: 12px; padding: 8px 13px;
-    border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2);
-    color: var(--text2); cursor: pointer; transition: all var(--tr); white-space: nowrap;
-    font-weight: 500;
-  }
-  .btn-opt:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-  .btn-opt .pts { font-size: 10px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; margin-left: 5px; }
-  .btn-opt.sel-0 { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-  .btn-opt.sel-1 { background: #fffde7; border-color: rgba(186,162,0,0.4); color: #7a6200; }
-  .btn-opt.sel-2 { background: var(--yellow-bg); border-color: var(--yellow-border); color: var(--yellow); }
-  .btn-opt.sel-3 { background: var(--orange-bg); border-color: rgba(184,79,0,0.4); color: var(--orange); }
-  .btn-opt.sel-4 { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
-  .btn-opt.missing { border-color: var(--red) !important; animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-
+  .main-container { max-width: 960px; margin: 0 auto; padding: 20px 16px 120px; }
+ 
+  /* PATIENT SECTION */
+  .patient-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); }
+  .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); }
+  .section-title-line { flex: 1; height: 1px; background: var(--border-color); }
+  .patient-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .input-group { display: flex; flex-direction: column; gap: 5px; }
+  .input-group label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  .input-group input { background: #f8fafc; border: 1.5px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 14px; padding: 9px 12px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+  .input-group input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: #fff; }
+  .input-group input::placeholder { color: var(--text-muted); }
+ 
+  /* PROGRESS */
+  .progress-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow-card); }
+  .progress-info { flex: 1; min-width: 160px; }
+  .progress-text { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; font-weight: 600; }
+  .progress-bar-outer { background: #e2e8f0; border-radius: 99px; height: 7px; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #2563eb, #16a34a); border-radius: 99px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .progress-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat-chip { display: flex; flex-direction: column; align-items: center; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 14px; min-width: 68px; }
+  .stat-chip .num { font-family: var(--score-font); font-size: 20px; font-weight: 700; color: var(--accent-blue); }
+  .stat-chip .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+ 
+  /* PARAMS GRID */
+  .params-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-bottom: 20px; }
+ 
+  /* PARAM CARD */
+  .param-card { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); transition: border-color 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+  .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-blue), #60a5fa); opacity: 0; transition: opacity 0.3s; }
+  .param-card.filled { border-color: #93c5fd; box-shadow: 0 2px 14px rgba(37,99,235,0.1); }
+  .param-card.filled::before { opacity: 1; }
+  .param-card.error { border-color: var(--accent-red) !important; box-shadow: 0 0 0 3px rgba(220,38,38,0.12) !important; animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+ 
+  .param-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 8px; }
+  .param-info { flex: 1; }
+  .param-num { font-size: 10px; color: var(--text-muted); font-family: var(--score-font); margin-bottom: 3px; }
+  .param-name { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  .param-eng { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-style: italic; }
+  .param-score-badge { font-family: var(--score-font); font-size: 22px; font-weight: 700; min-width: 40px; text-align: right; color: var(--text-muted); transition: all 0.3s; line-height: 1; }
+  .param-score-badge.scored { color: var(--accent-blue); }
+  .param-score-badge.zero { color: var(--accent-green); }
+  .pts-label { font-size: 10px; color: var(--text-muted); display: block; text-align: right; font-family: sans-serif; margin-top: 2px; }
+ 
+  /* OPTION BUTTONS */
+  .options-grid { display: flex; flex-direction: column; gap: 5px; }
+  .opt-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; border: 1.5px solid #e2e8f0; border-radius: var(--radius-btn); padding: 8px 12px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; text-align: left; background: #f8fafc; color: var(--text-secondary); position: relative; }
+  .opt-btn:hover { background: #f0f7ff; border-color: #93c5fd; color: var(--text-primary); transform: translateX(2px); }
+  .opt-btn .opt-range { flex: 1; }
+  .opt-btn .opt-score { font-family: var(--score-font); font-size: 14px; font-weight: 700; min-width: 32px; text-align: right; padding-left: 8px; }
+  .opt-btn.clr-green .opt-score { color: var(--btn-green-text); }
+  .opt-btn.clr-yellow .opt-score { color: var(--btn-yellow-text); }
+  .opt-btn.clr-orange .opt-score { color: var(--btn-orange-text); }
+  .opt-btn.clr-red .opt-score { color: var(--btn-red-text); }
+  .opt-btn.selected.clr-green { background: var(--btn-green-bg); border-color: var(--btn-green-border); color: var(--btn-green-text); box-shadow: 0 1px 6px rgba(22,163,74,0.15); }
+  .opt-btn.selected.clr-yellow { background: var(--btn-yellow-bg); border-color: var(--btn-yellow-border); color: var(--btn-yellow-text); box-shadow: 0 1px 6px rgba(202,138,4,0.15); }
+  .opt-btn.selected.clr-orange { background: var(--btn-orange-bg); border-color: var(--btn-orange-border); color: var(--btn-orange-text); box-shadow: 0 1px 6px rgba(234,88,12,0.15); }
+  .opt-btn.selected.clr-red { background: var(--btn-red-bg); border-color: var(--btn-red-border); color: var(--btn-red-text); box-shadow: 0 1px 6px rgba(220,38,38,0.15); }
+  .opt-btn.selected::after { content: '✓'; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; opacity: 0.8; }
+  .opt-btn.selected .opt-range { padding-left: 14px; }
+ 
   /* ACTIONS */
-  .actions { display: flex; gap: 12px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
-  .btn-calc {
-    background: linear-gradient(135deg, #1a5fb4, #2572cc);
-    color: #fff; border: none; padding: 13px 36px;
-    border-radius: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px;
-    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
-    box-shadow: 0 4px 14px rgba(26,95,180,0.35);
-  }
-  .btn-calc:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,95,180,0.45); }
-  .btn-secondary {
-    background: var(--surface); color: var(--text2);
-    border: 1px solid var(--border2);
-    padding: 13px 24px; border-radius: 10px; font-family: var(--mono); font-size: 13px;
-    cursor: pointer; transition: all 0.2s;
-    box-shadow: var(--shadow);
-  }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger:hover { border-color: var(--red) !important; color: var(--red) !important; }
-
+  .actions-section { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .btn-calc { flex: 1; min-width: 200px; background: linear-gradient(135deg, #1d4ed8, #2563eb); border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 700; padding: 14px 28px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; text-transform: uppercase; box-shadow: 0 4px 14px rgba(37,99,235,0.3); display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-calc:hover { background: linear-gradient(135deg, #1e40af, #1d4ed8); box-shadow: 0 6px 20px rgba(37,99,235,0.4); transform: translateY(-1px); }
+  .btn-reset { background: #fff; border: 1.5px solid var(--border-color); border-radius: 12px; color: var(--text-secondary); font-size: 14px; font-weight: 600; padding: 14px 20px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-reset:hover { border-color: var(--accent-red); color: var(--accent-red); background: #fef2f2; }
+ 
+  /* VALIDATION */
+  .validation-msg { background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--accent-red); display: none; margin-bottom: 16px; }
+  .validation-msg.visible { display: block; }
+  .validation-msg ul { margin-top: 8px; padding-left: 18px; }
+  .validation-msg li { margin-bottom: 3px; }
+ 
   /* RESULT */
-  .result-panel {
-    display: none; margin-top: 16px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 22px 26px;
-    box-shadow: var(--shadow-md);
+  .result-section { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; display: none; box-shadow: var(--shadow-card); animation: fadeIn 0.4s ease; }
+  .result-section.visible { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .result-main { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; align-items: stretch; }
+  .result-score-block { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px solid var(--border-color); border-radius: 14px; padding: 20px 28px; min-width: 150px; }
+  .result-score-block .big-score { font-family: var(--score-font); font-size: 52px; font-weight: 700; line-height: 1; color: var(--accent-blue); transition: color 0.3s; }
+  .result-score-block .score-unit { font-size: 12px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .result-risk-block { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px; }
+  .risk-row { display: flex; align-items: center; gap: 12px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 16px; }
+  .risk-row .risk-icon { font-size: 20px; }
+  .risk-row .risk-info { flex: 1; }
+  .risk-row .risk-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .risk-row .risk-value { font-family: var(--score-font); font-size: 22px; font-weight: 700; color: var(--accent-blue); transition: color 0.3s; }
+  .risk-meter { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 16px; }
+  .risk-meter-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .risk-bar-outer { background: #e2e8f0; border-radius: 99px; height: 10px; overflow: hidden; }
+  .risk-bar-inner { height: 100%; border-radius: 99px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1), background 0.3s; min-width: 4px; background: var(--accent-blue); }
+  .risk-ticks { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--text-muted); }
+  .interp-block { background: #f0f7ff; border-left: 4px solid var(--accent-blue); border-radius: 0 10px 10px 0; padding: 16px 18px; margin-top: 14px; transition: border-color 0.3s, background 0.3s; }
+  .interp-category { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; color: var(--accent-blue); }
+  .interp-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .interp-recs { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .interp-recs .rec-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+  .interp-recs .rec-item::before { content: '→'; color: var(--accent-blue); flex-shrink: 0; margin-top: 1px; }
+ 
+  /* PRINT BUTTON */
+  .print-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .btn-print { border-radius: 10px; font-size: 13px; font-weight: 600; padding: 11px 18px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); }
+  .btn-print:hover { border-color: var(--accent-blue); color: var(--accent-blue); background: #f0f7ff; }
+ 
+  /* FOOTER */
+  .footer-note { text-align: center; font-size: 12px; color: var(--text-muted); padding: 16px; border-top: 1px solid var(--border-color); margin-top: 20px; line-height: 1.6; }
+ 
+  /* STICKY BOTTOM */
+  .sticky-bottom { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.97); border-top: 1px solid var(--border-color); backdrop-filter: blur(10px); padding: 10px 16px; z-index: 99; display: none; box-shadow: 0 -2px 12px rgba(0,0,0,0.08); }
+  .sticky-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .sticky-score { display: flex; flex-direction: column; align-items: center; min-width: 52px; }
+  .sticky-score .val { font-family: var(--score-font); font-size: 24px; font-weight: 700; color: var(--accent-blue); line-height: 1; }
+  .sticky-score .lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+  .sticky-progress { flex: 1; }
+  .sticky-calc-btn { background: linear-gradient(135deg, #1d4ed8, #2563eb); border: none; border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; padding: 10px 16px; cursor: pointer; white-space: nowrap; }
+ 
+  /* RISK COLOR THEMES */
+  .risk-low .result-score-block { border-color: #16a34a; }
+  .risk-low .big-score, .risk-low .risk-value { color: #16a34a; }
+  .risk-low .interp-block { border-color: #16a34a; background: #f0fdf4; }
+  .risk-low .interp-category { color: #16a34a; }
+  .risk-low .live-score-badge { border-color: #86efac; }
+  .risk-low .live-score-badge .score-val { color: #16a34a; }
+  .risk-low .risk-bar-inner { background: #16a34a; }
+ 
+  .risk-moderate .result-score-block { border-color: #ca8a04; }
+  .risk-moderate .big-score, .risk-moderate .risk-value { color: #ca8a04; }
+  .risk-moderate .interp-block { border-color: #ca8a04; background: #fefce8; }
+  .risk-moderate .interp-category { color: #a16207; }
+  .risk-moderate .live-score-badge { border-color: #fde68a; }
+  .risk-moderate .live-score-badge .score-val { color: #ca8a04; }
+  .risk-moderate .risk-bar-inner { background: #ca8a04; }
+ 
+  .risk-high .result-score-block { border-color: #ea580c; }
+  .risk-high .big-score, .risk-high .risk-value { color: #ea580c; }
+  .risk-high .interp-block { border-color: #ea580c; background: #fff7ed; }
+  .risk-high .interp-category { color: #c2410c; }
+  .risk-high .live-score-badge { border-color: #fdba74; }
+  .risk-high .live-score-badge .score-val { color: #ea580c; }
+  .risk-high .risk-bar-inner { background: #ea580c; }
+ 
+  .risk-critical .result-score-block { border-color: #dc2626; }
+  .risk-critical .big-score, .risk-critical .risk-value { color: #dc2626; }
+  .risk-critical .interp-block { border-color: #dc2626; background: #fef2f2; }
+  .risk-critical .interp-category { color: #b91c1c; }
+  .risk-critical .live-score-badge { border-color: #fca5a5; }
+  .risk-critical .live-score-badge .score-val { color: #dc2626; }
+  .risk-critical .risk-bar-inner { background: linear-gradient(90deg, #ea580c, #dc2626); }
+ 
+  .print-doc { display: none; }
+ 
+  @media (max-width: 640px) {
+    .sticky-bottom { display: block; }
+    .params-grid { grid-template-columns: 1fr; }
+    .authors-banner .scale-name { font-size: 17px; }
   }
-  .result-panel.visible { display: block; }
-  .result-top { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
-  .result-num { font-family: var(--mono); font-size: 64px; font-weight: 700; line-height: 1; }
-  .result-right { flex: 1; }
-  .result-subtitle { font-size: 12px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.7px; font-weight: 600; }
-  .result-risk {
-    display: inline-block; padding: 5px 16px; border-radius: 20px;
-    font-weight: 600; font-size: 14px; margin-bottom: 8px;
+ 
+  @media print {
+    @page { size: A4; margin: 12mm 14mm; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; font-size: 10pt; }
+    .authors-banner, .app-header, .progress-section, .params-grid, .actions-section, .print-buttons, .footer-note, .sticky-bottom, .validation-msg, .patient-section, .result-section { display: none !important; }
+    .main-container { padding: 0 !important; max-width: 100% !important; }
+    .print-doc { display: block !important; max-width: 100% !important; }
+    .print-doc * { background: transparent !important; box-shadow: none !important; }
   }
-  .rg { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-  .ry { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
-  .rr { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-  .result-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
-  .result-bar-wrap { height: 4px; background: var(--bg2); border-radius: 2px; margin-top: 14px; overflow: hidden; }
-  .result-bar-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
-  .breakdown { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; margin-top: 14px; }
-  .bd-item {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px; text-align: center;
-    box-shadow: 0 1px 3px rgba(28,43,58,0.06);
-  }
-  .bd-item .bv { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--accent); }
-  .bd-item .bl { font-size: 10px; color: var(--text3); margin-top: 2px; font-weight: 600; text-transform: uppercase; }
-
-  /* MISSING */
-  .missing-warning { display: none; background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--red); margin-top: 12px; }
-  .missing-warning.visible { display: block; }
-
-  /* RESPONSIVE */
-  @media (max-width: 700px) {
-    .info-grid { grid-template-columns: 1fr; }
-    .breakdown { grid-template-columns: repeat(3,1fr); }
-    .result-num { font-size: 44px; }
-    .live-score-val { font-size: 22px; }
-    .top-banner { padding: 14px 16px 12px; }
-    .banner-score-name { font-size: 17px; }
-  }
-
-  /* ===== PRINT (BLACK & WHITE) ===== */
-#printable { display: none; }
-
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color: #000 !important;
-    background: #fff !important;
-  }
-
-  body {
-    font-family: Arial, sans-serif !important;
-    font-size: 12px !important;
-  }
-
-  .top-banner, .header, .main > *:not(#printable) {
-    display: none !important;
-  }
-
-  #printable {
-    display: block !important;
-  }
-
-  .p-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #000;
-    padding-bottom: 8px;
-  }
-
-  .p-hospital {
-    font-size: 15px;
-    font-weight: 700;
-  }
-
-  .p-sub {
-    font-size: 11px;
-  }
-
-  .p-meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 16px;
-    font-size: 12px;
-    margin: 8px 0 12px;
-  }
-
-  .p-meta-item {
-    display: flex;
-    gap: 6px;
-  }
-
-  .p-meta-item b {
-    min-width: 120px;
-  }
-
-  .p-title {
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    margin: 8px 0;
-    border: 1px solid #000;
-    padding: 5px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-  }
-
-  th {
-    border: 1px solid #000;
-    padding: 6px 8px;
-    font-size: 12px;
-    text-align: left;
-  }
-
-  td {
-    padding: 5px 8px;
-    border: 1px solid #000;
-    font-size: 12px;
-  }
-
-  .p-total {
-    font-size: 16px;
-    font-weight: 700;
-    margin: 10px 0 4px;
-  }
-
-  .p-interp {
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-
-  .p-comment {
-    border: 1px solid #000;
-    border-radius: 0;
-    padding: 8px;
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
-
-  .p-sign {
-    margin-top: 16px;
-    font-size: 12px;
-    border-top: 1px solid #000;
-    padding-top: 8px;
-    display: flex;
-    justify-content: space-between;
-  }
-}
+ 
+  /* PRINT DOC STYLES */
+  .print-doc { font-family: 'Times New Roman', serif; color: #000; }
+  .print-doc.print-visible { display: block; }
+  .print-hospital { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 14px; }
+  .print-hospital h2 { font-size: 15pt; font-weight: bold; margin-bottom: 3px; }
+  .print-hospital p { font-size: 10pt; }
+  .print-doc-title { text-align: center; font-size: 13pt; font-weight: bold; margin: 12px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .print-authors-block { text-align: center; font-size: 10pt; margin-bottom: 12px; color: #222; line-height: 1.8; }
+  .print-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-bottom: 12px; font-size: 10pt; border: 1px solid #ccc; padding: 8px 10px; border-radius: 4px; }
+  .print-meta-row { display: flex; gap: 5px; }
+  .print-meta-row .key { font-weight: bold; white-space: nowrap; }
+  .print-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 12px; }
+  .print-table th, .print-table td { border: 1px solid #444; padding: 4px 7px; vertical-align: top; }
+  .print-table th { background: #e8e8e8 !important; font-weight: bold; text-align: left; }
+  .print-table tr:nth-child(even) td { background: #f6f6f6 !important; }
+  .print-score-row { font-size: 12pt; font-weight: bold; text-align: center; margin: 10px 0 6px; padding: 8px; border: 2px solid #000; background: #f0f0f0 !important; }
+  .print-risk-row { font-size: 10.5pt; font-weight: bold; text-align: center; margin-bottom: 10px; padding: 6px; border: 1px solid #666; background: #e8e8e8 !important; }
+  .print-interp { border: 1px solid #666; padding: 10px 12px; margin-bottom: 10px; font-size: 9pt; background: #f9f9f9 !important; }
+  .print-interp h4 { font-size: 10pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+  .print-interp p { margin-bottom: 3px; line-height: 1.5; }
+  .print-interp ul { padding-left: 16px; }
+  .print-interp li { margin-bottom: 2px; line-height: 1.5; }
+  .print-disclaimer { font-size: 8pt; color: #555; border-top: 1px solid #ccc; padding-top: 6px; margin-top: 10px; font-style: italic; text-align: center; line-height: 1.5; }
+  .print-signature { margin-top: 18px; display: flex; justify-content: space-between; font-size: 10pt; }
+  .print-sign-block { border-top: 1px solid #000; width: 38%; padding-top: 3px; font-size: 9.5pt; }
+ 
+  /* Breakdown chips */
+  .breakdown-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .bd-chip { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px; text-align: center; flex: 1; min-width: 80px; }
+  .bd-chip .bv { font-family: var(--score-font); font-size: 20px; font-weight: 700; color: var(--accent-blue); }
+  .bd-chip .bl { font-size: 10px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; }
 </style>
 </head>
 <body>
-
-<!-- TOP BANNER -->
-<div class="top-banner">
-  <div class="banner-score-name">SOFA Score — Шкала оценки тяжести состояния пациентов ОРИТ</div>
-  <div class="banner-subtitle">Sequential Organ Failure Assessment · Калькулятор для клинической практики</div>
-  <div class="banner-authors">
-    <span>Авторы:</span>
-    <b>Максимова Анна Юрьевна, гр. 1416</b>
-    <span class="sep">·</span>
-    <b>Барбук Захар Андреевич, гр. 1416</b>
-    <span class="sep">·</span>
-    <span>Науч. рук.:</span>
-    <b>к.м.н. Бабков Иван Леонидович</b>
+ 
+<div class="authors-banner">
+  <div class="scale-name">SOFA Score — Шкала оценки органной недостаточности</div>
+  <div class="scale-sub">Sequential Organ Failure Assessment · Vincent et al., 1996 · Калькулятор для клинической практики</div>
+  <div class="authors-list">
+    <div class="author-item"><span class="role">Авторы:</span><span>Максимова Анна Юрьевна, гр. 1416</span></div>
+    <div class="divider">·</div>
+    <div class="author-item"><span>Барбук Захар Андреевич, гр. 1416</span></div>
+    <div class="divider">·</div>
+    <div class="author-item"><span class="role">Науч. рук.:</span><span> Бабков Иван Леонидович</span></div>
   </div>
 </div>
-
-<header class="header">
-  <div class="header-left">
-    <div class="header-logo">SF</div>
-    <div>
-      <div class="header-title">SOFA Score</div>
-      <div class="header-sub">Sequential Organ Failure Assessment · Vincent, 1996</div>
+ 
+<header class="app-header">
+  <div class="header-inner">
+    <div class="header-title">
+      <div class="header-icon">🫁</div>
+      <div class="header-text">
+        <h1>SOFA Score</h1>
+        <p>Оценка органной недостаточности · ОАиР</p>
+      </div>
     </div>
-  </div>
-  <div class="live-score-wrap">
-    <div class="live-score-label">Баллы</div>
-    <div class="live-score-val" id="liveScore">0</div>
+    <div class="live-score-badge" id="headerScoreBadge">
+      <div class="pulse-dot"></div>
+      <div>
+        <div class="score-val" id="headerScore">0</div>
+        <div class="score-label">Балл<br>SOFA</div>
+      </div>
+    </div>
   </div>
 </header>
-
-<div class="main">
-
-  <!-- PATIENT INFO -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">📋</span>
-      <span class="section-title">Данные пациента и врача</span>
+ 
+<div class="main-container">
+ 
+  <div class="patient-section">
+    <div class="section-title"><span>👤 Данные пациента</span><div class="section-title-line"></div></div>
+    <div class="patient-grid">
+      <div class="input-group" style="grid-column: 1 / -1;">
+        <label>ФИО пациента</label>
+        <input type="text" id="patientName" placeholder="Фамилия Имя Отчество" oninput="updateLive()">
+      </div>
+      <div class="input-group">
+        <label>№ истории болезни</label>
+        <input type="text" id="cardNumber" placeholder="Номер карты" oninput="updateLive()">
+      </div>
+      <div class="input-group">
+        <label>Название больницы</label>
+        <input type="text" id="hospital" placeholder="Наименование учреждения" oninput="updateLive()">
+      </div>
+      <div class="input-group">
+        <label>ФИО врача</label>
+        <input type="text" id="doctorName" placeholder="Фамилия И.О." oninput="updateLive()">
+      </div>
+      <div class="input-group">
+        <label>Дата</label>
+        <input type="text" id="dateField" readonly>
+      </div>
     </div>
-    <div class="section-body">
-      <div class="info-grid">
-        <div class="info-field">
-          <label>ФИО пациента</label>
-          <input id="patFio" type="text" placeholder="Иванов Иван Иванович" />
+  </div>
+ 
+  <div class="progress-section">
+    <div class="progress-info">
+      <div class="progress-text"><span>Заполнено параметров</span><span id="progressLabel">0 / 6</span></div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+    </div>
+    <div class="progress-stats">
+      <div class="stat-chip"><div class="num" id="statFilled">0</div><div class="lbl">Заполнено</div></div>
+      <div class="stat-chip"><div class="num" id="statLeft" style="color:#dc2626">6</div><div class="lbl">Осталось</div></div>
+      <div class="stat-chip"><div class="num" id="statScore">0</div><div class="lbl">Сумма</div></div>
+    </div>
+  </div>
+ 
+  <div class="validation-msg" id="validationMsg"></div>
+  <div class="params-grid" id="paramsGrid"></div>
+ 
+  <div class="actions-section">
+    <button class="btn-calc" onclick="calculate()"><span>⚡</span><span>Рассчитать SOFA</span></button>
+    <button class="btn-reset" onclick="resetAll()">↺ Сбросить</button>
+  </div>
+ 
+  <div class="result-section" id="resultSection">
+    <div class="section-title"><span>📊 Результат расчёта SOFA</span><div class="section-title-line"></div></div>
+    <div class="result-main">
+      <div class="result-score-block">
+        <div class="big-score" id="resultScore">—</div>
+        <div class="score-unit">баллов SOFA</div>
+      </div>
+      <div class="result-risk-block">
+        <div class="risk-row">
+          <div class="risk-icon">🏥</div>
+          <div class="risk-info">
+            <div class="risk-label">Категория органной дисфункции</div>
+            <div class="risk-value" id="resultCategory">—</div>
+          </div>
         </div>
-        <div class="info-field">
-          <label>Медицинская карта №</label>
-          <input id="patNum" type="text" placeholder="123456" />
-        </div>
-        <div class="info-field">
-          <label>Дата</label>
-          <input id="patDate" type="date" />
-        </div>
-        <div class="info-field">
-          <label>Название больницы</label>
-          <input id="hospital" type="text" placeholder="ГБУЗ ГКБ №1" />
-        </div>
-        <div class="info-field">
-          <label>ФИО врача</label>
-          <input id="doctorFio" type="text" placeholder="Петрова А.В." />
+        <div class="risk-meter">
+          <div class="risk-meter-label">Шкала тяжести дисфункции</div>
+          <div class="risk-bar-outer"><div class="risk-bar-inner" id="riskBarInner"></div></div>
+          <div class="risk-ticks"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- 1. RESPIRATION -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🫁</span>
-      <span class="section-title">1 · Дыхательная система — PaO₂ / FiO₂</span>
-      <span class="section-subscore" id="sc-resp">—</span>
-    </div>
-    <div class="section-body">
-      <div class="btn-group" id="resp">
-        <button class="btn-opt" data-p="resp" data-s="0" onclick="pick(this)">≥ 400 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="resp" data-s="1" onclick="pick(this)">300–399 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="resp" data-s="2" onclick="pick(this)">200–299 <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="resp" data-s="3" onclick="pick(this)">100–199 <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="resp" data-s="4" onclick="pick(this)">&lt; 100 <span class="pts">+4</span></button>
-      </div>
+    <div class="breakdown-row" id="breakdownRow"></div>
+    <div class="interp-block" id="interpBlock">
+      <div class="interp-category" id="interpCategory"></div>
+      <div class="interp-text" id="interpText"></div>
+      <div class="interp-recs" id="interpRecs"></div>
     </div>
   </div>
-
-  <!-- 2. PLATELETS -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🩸</span>
-      <span class="section-title">2 · Гемостаз — Тромбоциты (×10⁹/л)</span>
-      <span class="section-subscore" id="sc-plt">—</span>
-    </div>
-    <div class="section-body">
-      <div class="btn-group" id="plt">
-        <button class="btn-opt" data-p="plt" data-s="0" onclick="pick(this)">≥ 150 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="plt" data-s="1" onclick="pick(this)">100–149 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="plt" data-s="2" onclick="pick(this)">50–99 <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="plt" data-s="3" onclick="pick(this)">20–49 <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="plt" data-s="4" onclick="pick(this)">&lt; 20 <span class="pts">+4</span></button>
-      </div>
-    </div>
+ 
+  <div class="print-buttons" id="printButtons" style="display:none;">
+    <button class="btn-print" onclick="printDoc()">🖨 Печать протокола</button>
   </div>
-
-  <!-- 3. BILIRUBIN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🟡</span>
-      <span class="section-title">3 · Печень — Билирубин (мкмоль/л)</span>
-      <span class="section-subscore" id="sc-bili">—</span>
-    </div>
-    <div class="section-body">
-      <div class="btn-group" id="bili">
-        <button class="btn-opt" data-p="bili" data-s="0" onclick="pick(this)">&lt; 20 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="bili" data-s="1" onclick="pick(this)">20–32 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="bili" data-s="2" onclick="pick(this)">33–101 <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="bili" data-s="3" onclick="pick(this)">102–204 <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="bili" data-s="4" onclick="pick(this)">&gt; 204 <span class="pts">+4</span></button>
-      </div>
-    </div>
+ 
+  <div class="print-doc" id="printDoc"></div>
+ 
+  <div class="footer-note">
+    SOFA Score — шкала для оценки органной недостаточности у пациентов ОАиР.<br>
+    Результат не заменяет клиническое суждение врача. Vincent JL et al., Intensive Care Med 1996.
   </div>
-
-  <!-- 4. CARDIOVASCULAR -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🫀</span>
-      <span class="section-title">4 · Сердечно-сосудистая система</span>
-      <span class="section-subscore" id="sc-cvs">—</span>
+ 
+</div>
+ 
+<div class="sticky-bottom">
+  <div class="sticky-inner">
+    <div class="sticky-score"><div class="val" id="stickyScore">0</div><div class="lbl">SOFA</div></div>
+    <div class="sticky-progress">
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;" id="stickyLabel">0/6 заполнено</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="stickyProgress"></div></div>
     </div>
-    <div class="section-body">
-      <div class="btn-group" id="cvs">
-        <button class="btn-opt" data-p="cvs" data-s="0" onclick="pick(this)">MAP ≥ 70 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="cvs" data-s="1" onclick="pick(this)">MAP &lt; 70 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="cvs" data-s="2" onclick="pick(this)">Допамин ≤5 мкг/кг/мин <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="cvs" data-s="3" onclick="pick(this)">Допамин 5–15 мкг/кг/мин <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="cvs" data-s="4" onclick="pick(this)">Допамин &gt;15 / Адр / НА <span class="pts">+4</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. GCS -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🧠</span>
-      <span class="section-title">5 · Сознание — GCS</span>
-      <span class="section-subscore" id="sc-gcs">—</span>
-    </div>
-    <div class="section-body">
-      <div class="btn-group" id="gcs">
-        <button class="btn-opt" data-p="gcs" data-s="0" onclick="pick(this)">15 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="gcs" data-s="1" onclick="pick(this)">13–14 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="gcs" data-s="2" onclick="pick(this)">10–12 <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="gcs" data-s="3" onclick="pick(this)">6–9 <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="gcs" data-s="4" onclick="pick(this)">3–5 <span class="pts">+4</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. RENAL -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🫘</span>
-      <span class="section-title">6 · Почки — Креатинин (мкмоль/л) или диурез</span>
-      <span class="section-subscore" id="sc-renal">—</span>
-    </div>
-    <div class="section-body">
-      <div class="btn-group" id="renal">
-        <button class="btn-opt" data-p="renal" data-s="0" onclick="pick(this)">Кр &lt; 100 <span class="pts">0</span></button>
-        <button class="btn-opt" data-p="renal" data-s="1" onclick="pick(this)">Кр 100–170 <span class="pts">+1</span></button>
-        <button class="btn-opt" data-p="renal" data-s="2" onclick="pick(this)">Кр 171–299 <span class="pts">+2</span></button>
-        <button class="btn-opt" data-p="renal" data-s="3" onclick="pick(this)">Кр ≥ 300 <span class="pts">+3</span></button>
-        <button class="btn-opt" data-p="renal" data-s="4" onclick="pick(this)">Диурез &lt; 200 мл/сут <span class="pts">+4</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MISSING -->
-  <div class="missing-warning" id="missingWarn">⚠️ Не выбраны: <span id="missingList"></span></div>
-
-  <!-- ACTIONS -->
-  <div class="actions">
-    <button class="btn-calc" onclick="calculate()">▶ Рассчитать SOFA</button>
-    <button class="btn-secondary" onclick="printReport()">⎙ Печать</button>
-    <button class="btn-secondary btn-danger" onclick="resetAll()">✕ Сбросить</button>
-  </div>
-
-  <!-- RESULT -->
-  <div class="result-panel" id="resultPanel">
-    <div class="result-top">
-      <div class="result-num" id="rNum" style="color:var(--green)">0</div>
-      <div class="result-right">
-        <div class="result-subtitle">SOFA Score / 24</div>
-        <div class="result-risk" id="rRisk">—</div>
-        <div class="result-desc" id="rDesc"></div>
-      </div>
-    </div>
-    <div class="result-bar-wrap"><div class="result-bar-fill" id="rBar" style="width:0%;background:var(--green)"></div></div>
-    <div class="breakdown">
-      <div class="bd-item"><div class="bv" id="bd0">—</div><div class="bl">Дыхание</div></div>
-      <div class="bd-item"><div class="bv" id="bd1">—</div><div class="bl">Тромбоциты</div></div>
-      <div class="bd-item"><div class="bv" id="bd2">—</div><div class="bl">Билирубин</div></div>
-      <div class="bd-item"><div class="bv" id="bd3">—</div><div class="bl">ССС</div></div>
-      <div class="bd-item"><div class="bv" id="bd4">—</div><div class="bl">GCS</div></div>
-      <div class="bd-item"><div class="bv" id="bd5">—</div><div class="bl">Почки</div></div>
-    </div>
-  </div>
-
-</div><!-- /main -->
-
-<!-- ===== PRINTABLE ===== -->
-<div id="printable">
-  <div class="p-header">
-    <div>
-      <div class="p-hospital" id="pHospital">Лечебное учреждение</div>
-      <div class="p-sub">Отделение анестезиологии и реанимации</div>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-size:13px;font-weight:700;color:#1a3f6b;">SOFA Score</div>
-      <div style="font-size:11px;color:#555;">Sequential Organ Failure Assessment</div>
-    </div>
-  </div>
-
-  <div class="p-meta">
-    <div class="p-meta-item"><b>Пациент:</b> <span id="pPatFio">—</span></div>
-    <div class="p-meta-item"><b>Медицинская карта №:</b> <span id="pPatNum">—</span></div>
-    <div class="p-meta-item"><b>Врач:</b> <span id="pDoctor">—</span></div>
-    <div class="p-meta-item"><b>Дата:</b> <span id="pDate">—</span></div>
-  </div>
-
-  <div class="p-title">РАСЧЁТ ШКАЛЫ SOFA</div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Параметр</th>
-        <th>Орган / Система</th>
-        <th>Выбранное значение</th>
-        <th style="text-align:center;">Баллы</th>
-      </tr>
-    </thead>
-    <tbody id="pTableBody"></tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3" style="font-weight:700;text-align:right;">ИТОГО:</td>
-        <td style="font-weight:700;text-align:center;font-size:15px;" id="pTotal">—</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <div class="p-total">Результат: <span id="pScore">—</span> баллов</div>
-  <div class="p-interp" id="pInterp"></div>
-  <div class="p-comment" id="pComment"></div>
-
-  <div class="p-sign">
-    <span>Подпись врача: ____________________________</span>
-    <span>Дата: _______________</span>
+    <button class="sticky-calc-btn" onclick="calculate()">⚡ Считать</button>
   </div>
 </div>
-
+ 
 <script>
-  const PARAMS = ['resp','plt','bili','cvs','gcs','renal'];
-  const PARAM_NAMES = {
-    resp: 'PaO₂/FiO₂', plt: 'Тромбоциты', bili: 'Билирубин',
-    cvs: 'ССС / MAP / Вазопрессоры', gcs: 'GCS (сознание)', renal: 'Креатинин / Диурез'
+const SOFA_PARAMS = [
+  {
+    id: 'resp', num: 1, name: 'Дыхательная система', eng: 'PaO₂ / FiO₂, мм рт.ст.',
+    options: [
+      { label: '≥ 400', score: 0, color: 'green' },
+      { label: '300 – 399', score: 1, color: 'yellow' },
+      { label: '200 – 299', score: 2, color: 'yellow' },
+      { label: '100 – 199', score: 3, color: 'orange' },
+      { label: '< 100', score: 4, color: 'red' },
+    ]
+  },
+  {
+    id: 'plt', num: 2, name: 'Гемостаз', eng: 'Тромбоциты, ×10⁹/л',
+    options: [
+      { label: '≥ 150', score: 0, color: 'green' },
+      { label: '100 – 149', score: 1, color: 'yellow' },
+      { label: '50 – 99', score: 2, color: 'yellow' },
+      { label: '20 – 49', score: 3, color: 'orange' },
+      { label: '< 20', score: 4, color: 'red' },
+    ]
+  },
+  {
+    id: 'bili', num: 3, name: 'Печень', eng: 'Билирубин, мкмоль/л',
+    options: [
+      { label: '< 20', score: 0, color: 'green' },
+      { label: '20 – 32', score: 1, color: 'yellow' },
+      { label: '33 – 101', score: 2, color: 'yellow' },
+      { label: '102 – 204', score: 3, color: 'orange' },
+      { label: '> 204', score: 4, color: 'red' },
+    ]
+  },
+  {
+    id: 'cvs', num: 4, name: 'Сердечно-сосудистая система', eng: 'MAP / Вазопрессоры',
+    options: [
+      { label: 'MAP ≥ 70 мм рт.ст.', score: 0, color: 'green' },
+      { label: 'MAP < 70 мм рт.ст.', score: 1, color: 'yellow' },
+      { label: 'Допамин ≤ 5 мкг/кг/мин', score: 2, color: 'yellow' },
+      { label: 'Допамин 5–15 мкг/кг/мин', score: 3, color: 'orange' },
+      { label: 'Допамин > 15 / Адреналин / НА', score: 4, color: 'red' },
+    ]
+  },
+  {
+    id: 'gcs', num: 5, name: 'Сознание', eng: 'Шкала комы Глазго (GCS)',
+    options: [
+      { label: 'GCS 15', score: 0, color: 'green' },
+      { label: 'GCS 13 – 14', score: 1, color: 'yellow' },
+      { label: 'GCS 10 – 12', score: 2, color: 'yellow' },
+      { label: 'GCS 6 – 9', score: 3, color: 'orange' },
+      { label: 'GCS 3 – 5', score: 4, color: 'red' },
+    ]
+  },
+  {
+    id: 'renal', num: 6, name: 'Почки', eng: 'Креатинин мкмоль/л или диурез',
+    options: [
+      { label: 'Кр < 100 мкмоль/л', score: 0, color: 'green' },
+      { label: 'Кр 100 – 170 мкмоль/л', score: 1, color: 'yellow' },
+      { label: 'Кр 171 – 299 мкмоль/л', score: 2, color: 'yellow' },
+      { label: 'Кр ≥ 300 мкмоль/л', score: 3, color: 'orange' },
+      { label: 'Диурез < 200 мл/сут', score: 4, color: 'red' },
+    ]
+  },
+];
+ 
+const PARAM_LABELS = { resp: 'Дыхание', plt: 'Тромб.', bili: 'Билир.', cvs: 'ССС', gcs: 'GCS', renal: 'Почки' };
+const state = { selections: {} };
+ 
+function calcTotalScore() {
+  let total = 0;
+  for (const p of SOFA_PARAMS) { const idx = state.selections[p.id]; if (idx !== undefined) total += p.options[idx].score; }
+  return total;
+}
+function calcFilledCount() { return Object.keys(state.selections).length; }
+ 
+function getRiskClass(score) {
+  if (score <= 6) return 'risk-low';
+  if (score <= 12) return 'risk-moderate';
+  if (score <= 18) return 'risk-high';
+  return 'risk-critical';
+}
+ 
+function getInterpretation(score) {
+  if (score <= 6) return {
+    category: '🟢 Минимальная органная дисфункция',
+    text: 'Функция органов сохранена или незначительно нарушена. Состояние пациента относительно стабильное.',
+    recs: ['Стандартный мониторинг витальных функций', 'Ежедневная оценка органной функции', 'Продолжение базовой терапии', 'Повторная оценка SOFA через 24–48 ч']
   };
-  const ORGANS = {
-    resp: 'Дыхательная', plt: 'Гемостаз', bili: 'Печень',
-    cvs: 'Сердечно-сосудистая', gcs: 'ЦНС', renal: 'Почки'
+  if (score <= 12) return {
+    category: '🟡 Умеренная органная дисфункция',
+    text: 'Умеренное нарушение функции нескольких органов. Требуется усиленный мониторинг и активная коррекция.',
+    recs: ['Мониторинг витальных функций каждые 2–4 часа', 'Оценка гемодинамики и волемического статуса', 'Контроль лабораторных показателей не реже 1 раза в сутки', 'Оптимизация инфузионной терапии и вазоактивных препаратов', 'Рассмотреть расширение респираторной поддержки']
   };
-  const SC_IDS = ['sc-resp','sc-plt','sc-bili','sc-cvs','sc-gcs','sc-renal'];
-  const BD_IDS = ['bd0','bd1','bd2','bd3','bd4','bd5'];
-
-  const state = {};
-
-  document.getElementById('patDate').valueAsDate = new Date();
-
-  function pick(btn) {
-    const p = btn.dataset.p;
-    const s = parseInt(btn.dataset.s);
-    document.querySelectorAll(`[data-p="${p}"]`).forEach(b => {
-      b.className = 'btn-opt';
-      b.classList.remove('missing');
-    });
-    btn.classList.add(`sel-${s}`);
-    state[p] = { score: s, label: btn.textContent.replace(/\+?\d+$/, '').trim() };
-    const idx = PARAMS.indexOf(p);
-    document.getElementById(SC_IDS[idx]).textContent = s + ' / 4';
-    updateLive();
-  }
-
-  function updateLive() {
-    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
-    const el = document.getElementById('liveScore');
-    el.textContent = total;
-    el.className = 'live-score-val';
-    if (total >= 13) el.classList.add('high');
-    else if (total >= 7) el.classList.add('med');
-  }
-
-  function calculate() {
-    const missing = PARAMS.filter(p => state[p] === undefined);
-    PARAMS.forEach(p => {
-      document.querySelectorAll(`[data-p="${p}"]`).forEach(b => b.classList.remove('missing'));
-    });
-    if (missing.length > 0) {
-      missing.forEach(p => {
-        document.querySelectorAll(`[data-p="${p}"]`).forEach(b => b.classList.add('missing'));
-      });
-      document.getElementById('missingList').textContent = missing.map(p => PARAM_NAMES[p]).join(', ');
-      document.getElementById('missingWarn').classList.add('visible');
-      document.getElementById('missingWarn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } else {
-      document.getElementById('missingWarn').classList.remove('visible');
+  if (score <= 18) return {
+    category: '🟠 Тяжёлая органная дисфункция',
+    text: 'Выраженная дисфункция нескольких органов. Высокий риск прогрессирования. Необходима эскалация терапии.',
+    recs: ['Непрерывный инвазивный мониторинг гемодинамики', 'Оценка показаний к ИВЛ и заместительной почечной терапии', 'Вазопрессорная поддержка при гемодинамической нестабильности', 'Ежедневная оценка SOFA и динамики органной дисфункции', 'Мультидисциплинарный консилиум', 'Обсудить цели терапии с родственниками']
+  };
+  return {
+    category: '🔴 Полиорганная недостаточность',
+    text: 'Тяжёлая полиорганная недостаточность с крайне высоким риском летального исхода. Необходим максимальный объём интенсивной терапии.',
+    recs: ['Максимальный мониторинг всех систем жизнеобеспечения', 'ИВЛ с протективными параметрами', 'Заместительная почечная терапия при ОПН', 'Экстракорпоральные методы поддержки при показаниях (ЭКМО)', 'Высокодозная вазопрессорная терапия', 'Коллегиальное обсуждение прогноза и объёма помощи', 'Ежечасная документация состояния']
+  };
+}
+ 
+function renderParams() {
+  const grid = document.getElementById('paramsGrid');
+  grid.innerHTML = '';
+  for (const param of SOFA_PARAMS) {
+    const card = document.createElement('div');
+    card.className = 'param-card';
+    card.id = 'card-' + param.id;
+    const selectedIdx = state.selections[param.id];
+    const isSelected = selectedIdx !== undefined;
+    if (isSelected) card.classList.add('filled');
+    const selectedScore = isSelected ? param.options[selectedIdx].score : null;
+    const scoreBadgeClass = isSelected ? (selectedScore === 0 ? 'zero' : 'scored') : '';
+    let optionsHTML = '';
+    for (let i = 0; i < param.options.length; i++) {
+      const opt = param.options[i];
+      const isActive = selectedIdx === i;
+      optionsHTML += `<button class="opt-btn clr-${opt.color}${isActive ? ' selected' : ''}" onclick="selectOption('${param.id}', ${i})"><span class="opt-range">${opt.label}</span><span class="opt-score">+${opt.score}</span></button>`;
     }
-
-    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
-    const panel = document.getElementById('resultPanel');
-    panel.classList.add('visible');
-
-    document.getElementById('rNum').textContent = total;
-    PARAMS.forEach((p, i) => {
-      document.getElementById(BD_IDS[i]).textContent = state[p] !== undefined ? state[p].score : '—';
-    });
-
-    let riskClass, riskText, desc, barColor;
-    if (total <= 6) {
-      riskClass = 'rg'; riskText = '🟢 Низкий риск'; barColor = 'var(--green)';
-      desc = `SOFA ${total}: стабильное состояние. Органная дисфункция минимальна. Продолжить стандартный мониторинг и терапию. Повторная оценка через 24–48 ч.`;
-    } else if (total <= 12) {
-      riskClass = 'ry'; riskText = '🟡 Средний риск'; barColor = 'var(--yellow)';
-      desc = `SOFA ${total}: умеренная органная дисфункция. Требуется усиленный мониторинг, оценка функции органов, возможна коррекция инфузионной терапии и вазоактивных препаратов.`;
-    } else {
-      riskClass = 'rr'; riskText = '🔴 Высокий риск ПОЛИОРГАННОЙ НЕДОСТАТОЧНОСТИ'; barColor = 'var(--red)';
-      desc = `SOFA ${total}: тяжёлая полиорганная дисфункция/недостаточность. Показаны максимальная интенсивная терапия, вазопрессоры, возможно — ИВЛ, ЗПТ. Консилиум. Летальность > 40–50%.`;
-    }
-
-    const rEl = document.getElementById('rRisk');
-    rEl.className = 'result-risk ' + riskClass;
-    rEl.textContent = riskText;
-    document.getElementById('rDesc').textContent = desc;
-    document.getElementById('rNum').style.color = barColor;
-    document.getElementById('rBar').style.cssText = `width:${(total/24)*100}%;background:${barColor}`;
-
-    populatePrint(total, riskText, desc);
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    card.innerHTML = `
+      <div class="param-header">
+        <div class="param-info">
+          <div class="param-num">Параметр ${param.num} / 6</div>
+          <div class="param-name">${param.name}</div>
+          <div class="param-eng">(${param.eng})</div>
+        </div>
+        <div>
+          <div class="param-score-badge ${scoreBadgeClass}" id="badge-${param.id}">${isSelected ? selectedScore : '—'}</div>
+          <span class="pts-label">баллов</span>
+        </div>
+      </div>
+      <div class="options-grid">${optionsHTML}</div>`;
+    grid.appendChild(card);
   }
-
-  function populatePrint(total, riskText, desc) {
-    document.getElementById('pHospital').textContent = document.getElementById('hospital').value || 'Лечебное учреждение';
-    document.getElementById('pPatFio').textContent = document.getElementById('patFio').value || '—';
-    document.getElementById('pPatNum').textContent = document.getElementById('patNum').value || '—';
-    document.getElementById('pDoctor').textContent = document.getElementById('doctorFio').value || '—';
-    const d = document.getElementById('patDate').value;
-    document.getElementById('pDate').textContent = d ? new Date(d).toLocaleDateString('ru-RU') : '—';
-    document.getElementById('pScore').textContent = total;
-    document.getElementById('pTotal').textContent = total;
-    document.getElementById('pInterp').textContent = riskText;
-    document.getElementById('pComment').textContent = desc;
-
-    const tbody = document.getElementById('pTableBody');
-    tbody.innerHTML = '';
-    PARAMS.forEach(p => {
-      const v = state[p];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${PARAM_NAMES[p]}</td><td>${ORGANS[p]}</td><td>${v ? v.label : '—'}</td><td style="text-align:center;font-weight:700;">${v ? v.score : '—'}</td>`;
-      tbody.appendChild(tr);
-    });
+}
+ 
+function selectOption(paramId, optionIdx) {
+  if (state.selections[paramId] === optionIdx) delete state.selections[paramId];
+  else state.selections[paramId] = optionIdx;
+  updateCard(paramId);
+  updateLive();
+  document.getElementById('card-' + paramId).classList.remove('error');
+}
+ 
+function updateCard(paramId) {
+  const param = SOFA_PARAMS.find(p => p.id === paramId);
+  const card = document.getElementById('card-' + paramId);
+  const badge = document.getElementById('badge-' + paramId);
+  const selectedIdx = state.selections[paramId];
+  const isSelected = selectedIdx !== undefined;
+  card.classList.toggle('filled', isSelected);
+  if (badge) {
+    const score = isSelected ? param.options[selectedIdx].score : null;
+    badge.textContent = isSelected ? score : '—';
+    badge.className = 'param-score-badge' + (isSelected ? (score === 0 ? ' zero' : ' scored') : '');
   }
-
-  function printReport() {
-    const total = PARAMS.reduce((acc, p) => acc + (state[p] ? state[p].score : 0), 0);
-    const riskText = total <= 6 ? 'Низкий риск' : total <= 12 ? 'Средний риск' : 'Высокий риск ПОЛИОРГАННОЙ НЕДОСТАТОЧНОСТИ';
-    const desc = total <= 6 ? 'Стабильное состояние. Продолжить мониторинг.' : total <= 12 ? 'Умеренная органная дисфункция. Усиленный мониторинг.' : 'Тяжёлая полиорганная недостаточность. Максимальная ИТ.';
-    populatePrint(total, riskText, desc);
-    window.print();
+  card.querySelectorAll('.opt-btn').forEach((btn, i) => btn.classList.toggle('selected', i === selectedIdx));
+}
+ 
+function updateLive() {
+  const total = calcTotalScore();
+  const filled = calcFilledCount();
+  const pct = (filled / 6) * 100;
+  document.getElementById('headerScore').textContent = total;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = filled + ' / 6';
+  document.getElementById('statFilled').textContent = filled;
+  document.getElementById('statLeft').textContent = 6 - filled;
+  document.getElementById('statScore').textContent = total;
+  document.getElementById('stickyScore').textContent = total;
+  document.getElementById('stickyLabel').textContent = filled + '/6 заполнено';
+  document.getElementById('stickyProgress').style.width = pct + '%';
+  const riskClass = filled > 0 ? getRiskClass(total) : '';
+  const badge = document.getElementById('headerScoreBadge');
+  ['risk-low','risk-moderate','risk-high','risk-critical'].forEach(c => badge.classList.remove(c));
+  if (filled > 0) badge.classList.add(riskClass);
+}
+ 
+function calculate() {
+  const missing = SOFA_PARAMS.filter(p => state.selections[p.id] === undefined);
+  SOFA_PARAMS.forEach(p => document.getElementById('card-' + p.id).classList.remove('error'));
+  if (missing.length > 0) {
+    const vm = document.getElementById('validationMsg');
+    vm.className = 'validation-msg visible';
+    let html = `<strong>⚠️ Не выбраны ${missing.length} из 6 параметров:</strong><ul>`;
+    missing.forEach(p => { html += `<li>${p.num}. ${p.name}</li>`; document.getElementById('card-' + p.id).classList.add('error'); });
+    html += `</ul><p style="margin-top:6px;font-size:12px;color:#b91c1c;">Расчёт выполнен на основе ${6-missing.length}/6 заполненных параметров.</p>`;
+    vm.innerHTML = html;
+    document.getElementById('card-' + missing[0].id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    document.getElementById('validationMsg').className = 'validation-msg';
   }
-
-  function resetAll() {
-    PARAMS.forEach(p => { delete state[p]; });
-    document.querySelectorAll('.btn-opt').forEach(b => { b.className = 'btn-opt'; });
-    SC_IDS.forEach(id => { document.getElementById(id).textContent = '—'; });
-    document.getElementById('resultPanel').classList.remove('visible');
-    document.getElementById('missingWarn').classList.remove('visible');
-    document.getElementById('liveScore').textContent = '0';
-    document.getElementById('liveScore').className = 'live-score-val';
+ 
+  const score = calcTotalScore();
+  const riskClass = getRiskClass(score);
+  const interp = getInterpretation(score);
+  const categoryText = { 'risk-low': 'Минимальная', 'risk-moderate': 'Умеренная', 'risk-high': 'Тяжёлая', 'risk-critical': 'Полиорган. недост.' }[riskClass];
+ 
+  document.getElementById('resultScore').textContent = score;
+  document.getElementById('resultCategory').textContent = categoryText;
+  document.getElementById('riskBarInner').style.width = Math.min((score / 24) * 100, 100) + '%';
+  document.getElementById('interpCategory').textContent = interp.category;
+  document.getElementById('interpText').textContent = interp.text;
+  document.getElementById('interpRecs').innerHTML = interp.recs.map(r => `<div class="rec-item">${r}</div>`).join('');
+ 
+  // Breakdown chips
+  const br = document.getElementById('breakdownRow');
+  br.innerHTML = SOFA_PARAMS.map(p => {
+    const idx = state.selections[p.id];
+    const val = idx !== undefined ? p.options[idx].score : '—';
+    return `<div class="bd-chip"><div class="bv">${val}</div><div class="bl">${PARAM_LABELS[p.id]}</div></div>`;
+  }).join('');
+ 
+  const resultSection = document.getElementById('resultSection');
+  ['risk-low','risk-moderate','risk-high','risk-critical'].forEach(c => resultSection.classList.remove(c));
+  resultSection.classList.add(riskClass, 'visible');
+  ['risk-low','risk-moderate','risk-high','risk-critical'].forEach(c => document.getElementById('headerScoreBadge').classList.remove(c));
+  document.getElementById('headerScoreBadge').classList.add(riskClass);
+ 
+  document.getElementById('printButtons').style.display = 'flex';
+  buildPrintDoc(score, interp, riskClass);
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+ 
+function buildPrintDoc(score, interp, riskClass) {
+  const name = document.getElementById('patientName').value || '—';
+  const card = document.getElementById('cardNumber').value || '—';
+  const hosp = document.getElementById('hospital').value || '—';
+  const doctor = document.getElementById('doctorName').value || '—';
+  const date = document.getElementById('dateField').value || '—';
+  const riskText = { 'risk-low': 'Минимальная органная дисфункция', 'risk-moderate': 'Умеренная органная дисфункция', 'risk-high': 'Тяжёлая органная дисфункция', 'risk-critical': 'Полиорганная недостаточность' }[riskClass];
+ 
+  let tableRows = '';
+  for (const param of SOFA_PARAMS) {
+    const idx = state.selections[param.id];
+    const isSelected = idx !== undefined;
+    const optLabel = isSelected ? param.options[idx].label : '<i>не выбрано</i>';
+    const optScore = isSelected ? param.options[idx].score : '—';
+    tableRows += `<tr><td>${param.num}</td><td><strong>${param.name}</strong><br><small>(${param.eng})</small></td><td>${optLabel}</td><td style="text-align:center;font-weight:bold;">${optScore}</td></tr>`;
   }
+ 
+  document.getElementById('printDoc').innerHTML = `
+    <div class="print-hospital"><h2>${hosp !== '—' ? hosp : 'Медицинское учреждение'}</h2><p>Отделение анестезиологии и реанимации</p></div>
+    <div class="print-doc-title">Протокол расчёта шкалы SOFA</div>
+    <div class="print-authors-block"><strong>Авторы:</strong> Максимова Анна Юрьевна (гр. 1416), Барбук Захар Андреевич (гр. 1416)<br><strong>Научный руководитель:</strong> Бабков Иван Леонидович</div>
+    <div class="print-meta">
+      <div class="print-meta-row"><span class="key">Пациент:</span><span>${name}</span></div>
+      <div class="print-meta-row"><span class="key">Дата:</span><span>${date}</span></div>
+      <div class="print-meta-row"><span class="key">№ истории болезни:</span><span>${card}</span></div>
+      <div class="print-meta-row"><span class="key">Врач:</span><span>${doctor}</span></div>
+    </div>
+    <table class="print-table">
+      <thead><tr><th style="width:28px">№</th><th>Параметр</th><th>Значение</th><th style="width:55px;text-align:center">Баллы</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div class="print-score-row">ИТОГОВЫЙ БАЛЛ SOFA: &nbsp;<span style="font-size:15pt;">${score}</span>&nbsp; из 24</div>
+    <div class="print-risk-row">Категория: <strong>${riskText}</strong></div>
+    <div class="print-interp">
+      <h4>Интерпретация</h4>
+      <p><strong>${interp.category.replace(/^[\S]+ /, '')}</strong></p>
+      <p>${interp.text}</p>
+      <p><strong>Рекомендации:</strong></p>
+      <ul>${interp.recs.map(r => `<li>${r}</li>`).join('')}</ul>
+    </div>
+    <div class="print-disclaimer">SOFA Score (Vincent JL et al., Intensive Care Med 1996) — шкала для оценки органной недостаточности в ОАиР.<br>Результат является статистической оценкой и не заменяет клиническое суждение врача.</div>
+    <div class="print-signature">
+      <div class="print-sign-block">Лечащий врач: ${doctor}</div>
+      <div class="print-sign-block">Подпись: ________________</div>
+    </div>`;
+}
+ 
+function printDoc() {
+  const printContent = document.getElementById('printDoc').innerHTML;
+  const pw = window.open('', '_blank');
+  pw.document.write(`<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>SOFA — Протокол</title><style>
+    @page{size:A4 portrait;margin:8mm 10mm}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;background:#fff!important}
+    html,body{background:#fff!important}
+    body{font-family:'Times New Roman',serif;color:#000;font-size:8.5pt}
+    .print-hospital{text-align:center;border-bottom:2px solid #000;padding-bottom:5px;margin-bottom:6px}
+    .print-hospital h2{font-size:12pt;font-weight:bold;margin-bottom:2px}
+    .print-hospital p{font-size:8pt}
+    .print-doc-title{text-align:center;font-size:10pt;font-weight:bold;margin:5px 0;text-transform:uppercase;letter-spacing:1px}
+    .print-authors-block{text-align:center;font-size:8.5pt;margin-bottom:8px;color:#222;line-height:1.6}
+    .print-meta{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px;margin-bottom:6px;font-size:8.5pt}
+    .print-meta-row{display:flex;gap:4px}
+    .print-meta-row .key{font-weight:bold;white-space:nowrap}
+    .print-table{width:100%;border-collapse:collapse;font-size:7pt;margin-bottom:6px;table-layout:fixed}
+    .print-table th,.print-table td{border:1px solid #555;padding:2px 4px;vertical-align:top;word-wrap:break-word}
+    .print-table th{font-weight:bold;text-align:left}
+    .print-score-row{font-size:10pt;font-weight:bold;text-align:center;margin:6px 0 4px;padding:5px;border:2px solid #000}
+    .print-risk-row{font-size:8.5pt;font-weight:bold;text-align:center;margin-bottom:6px;padding:4px;border:1px solid #555}
+    .print-interp{border:1px solid #666;padding:6px 8px;margin-bottom:6px;font-size:7.5pt}
+    .print-interp h4{font-size:8.5pt;font-weight:bold;margin-bottom:3px;text-transform:uppercase}
+    .print-interp p{margin-bottom:2px;line-height:1.35}
+    .print-interp ul{padding-left:13px}
+    .print-interp li{margin-bottom:2px;line-height:1.35}
+    .print-disclaimer{font-size:6.5pt;color:#555;border-top:1px solid #ccc;padding-top:4px;margin-top:4px;font-style:italic;text-align:center;line-height:1.35}
+    .print-signature{margin-top:8px;display:flex;justify-content:space-between;font-size:8.5pt}
+    .print-sign-block{border-top:1px solid #000;width:38%;padding-top:3px;font-size:8pt}
+    small{font-size:85%}
+  </style></head><body>${printContent}</body></html>`);
+  pw.document.close(); pw.focus(); setTimeout(() => pw.print(), 400);
+}
+ 
+function resetAll() {
+  if (!confirm('Сбросить все выбранные параметры?')) return;
+  state.selections = {};
+  document.getElementById('resultSection').className = 'result-section';
+  document.getElementById('printButtons').style.display = 'none';
+  document.getElementById('validationMsg').className = 'validation-msg';
+  ['risk-low','risk-moderate','risk-high','risk-critical'].forEach(c => document.getElementById('headerScoreBadge').classList.remove(c));
+  renderParams();
+  updateLive();
+}
+ 
+function init() {
+  const today = new Date();
+  document.getElementById('dateField').value = String(today.getDate()).padStart(2,'0') + '.' + String(today.getMonth()+1).padStart(2,'0') + '.' + today.getFullYear();
+  renderParams();
+  updateLive();
+}
+ 
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
