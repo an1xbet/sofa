@@ -302,7 +302,7 @@
         <input type="text" id="patientName" placeholder="Фамилия Имя Отчество" oninput="updateLive()">
       </div>
       <div class="input-group">
-        <label>№ истории болезни</label>
+        <label> Медицинская карта № </label>
         <input type="text" id="cardNumber" placeholder="Номер карты" oninput="updateLive()">
       </div>
       <div class="input-group">
@@ -645,7 +645,7 @@ function buildPrintDoc(score, interp, riskClass) {
     <div class="print-meta">
       <div class="print-meta-row"><span class="key">Пациент:</span><span>${name}</span></div>
       <div class="print-meta-row"><span class="key">Дата:</span><span>${date}</span></div>
-      <div class="print-meta-row"><span class="key">№ истории болезни:</span><span>${card}</span></div>
+      <div class="print-meta-row"><span class="key"> медицинская карта № :</span><span>${card}</span></div>
       <div class="print-meta-row"><span class="key">Врач:</span><span>${doctor}</span></div>
     </div>
     <table class="print-table">
